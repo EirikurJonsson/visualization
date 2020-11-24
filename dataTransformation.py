@@ -20,3 +20,7 @@ for name in names:
             plt.plot(df["dates"], df[name])
             plt.title(name +" "+ country)
             plt.show()
+        else:
+            df = data[data["location"] == country]
+            plt.plot(df["dates"], df[name])
+            plt.show()
