@@ -17,28 +17,51 @@ import dash
 import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
+from dash.dependencies import Output, Input
 import plotly.express as px
 import pandas as pd
 
-data = pd.read_csv("owid-covid-data.csv")
+external_stylesheet = 'https://codepen.io/chriddyp/pen/bWLwgP.css'
 
-app = dash.Dash(__name__, external_stylesheets = [dbc.themes.SLATE])
+data = pd.read_csv("owid-covid-data.csv")
+data["date"] = pd.to_datetime(data["date"])
+data = data.sort_values(by = "date")
+data["total_cases_diff"] = data["total_cases"].diff()
+
+
+app = dash.Dash(__name__, external_stylesheets = [external_stylesheet])
 application = app.server
 app.title = "Visualization Project"
-app.layout = html.Div([
-    dbc.Row([
-        dbc.Col(
-            html.Div(
-                children = [
-                    html.H1("THIS WORKS "),
-                    html.H2("THIS AS WELL"),
-                    html.H4("THIS HERE TO")
-                    ] 
-
+app.layout = html.Div(
+        children = [
+            dcc.Dropdown(
+                id = 'graph_filter',
+                options = [
+                    {
+                        'label': i, 'value':i
+                        } for i in data["location"].unique()
+                    ]
+                ),
+            dcc.Graph(
+                id = 'dailyChange'
                 )
-            )
-        ])
-    ])
+            ]
+        )
+
+@app.callback(
+        Output('dailyChange', 'figure'),
+        [Input('graph_filter', 'value')]
+        )
+
+def graphDiffperCountry(input_data):
+    data = pd.read_csv("owid-covid-data.csv")
+    data = data[data["location"] == input_data]
+    data = data.sort_values(by = "date")
+    data["total_cases_diff"] = data["total_cases"].diff()
+    fig = px.line(data, x = 'date', y = 'total_cases_diff')
+    return(fig)
+
+
 
 if __name__ == '__main__':
     app.run_server(debug=True)
