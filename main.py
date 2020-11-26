@@ -18,6 +18,7 @@ import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
 from dash.dependencies import Output, Input
+from dash_table import DataTable
 import plotly.express as px
 import pandas as pd
 
@@ -28,6 +29,17 @@ data["date"] = pd.to_datetime(data["date"])
 data = data.sort_values(by = "date")
 data["total_cases_diff"] = data["total_cases"].diff()
 
+descriptiveAttributes = [
+        'location',
+        'population',
+        'gdp_per_capita',
+        'life_expectancy',
+        'median_age',
+        'human_development_index'
+        ]
+
+df = data.drop_duplicates(subset = 'location')
+df = df.loc[:,descriptiveAttributes].reset_index(drop=True)
 
 app = dash.Dash(__name__, external_stylesheets = [external_stylesheet])
 application = app.server
@@ -53,7 +65,25 @@ app.layout = html.Div(
                         )
 
                     ],
-                className = 'six columns')
+                className = 'six columns'
+                ),
+            html.Div(
+                children = [
+                   DataTable(
+                       id = 'descriptiveTable',
+                       columns = [
+                           {
+                               'name':columnHeader, 'id':columnHeader
+                               } for columnHeader in descriptiveAttributes
+                           ],
+                       style_cell = {
+                           'font_size':'16px'
+                           }
+                       ) 
+                    ],
+                className = 'four columns'
+                )
+
             ]
         )
 
@@ -79,6 +109,25 @@ def graphDiffperCountry(input_data):
 
     return(fig)
 
+@app.callback(
+        Output('descriptiveTable', 'data'),
+        [Input('graph_filter', 'value')]
+        )
+def descriptiveTable(input_data):
+    df = pd.read_csv("owid-covid-data.csv")
+
+    descriptiveAttributes = [
+            'location',
+            'population',
+            'gdp_per_capita',
+            'life_expectancy',
+            'median_age',
+            'human_development_index'
+            ]
+    df = df[df["location"] == input_data]
+    df = df.drop_duplicates(subset = 'location')
+    df = df.loc[:,descriptiveAttributes].reset_index(drop=True)
+    return(df.to_dict('records'))
 
 
 if __name__ == '__main__':
