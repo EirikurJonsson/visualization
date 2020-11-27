@@ -46,6 +46,8 @@ application = app.server
 app.title = "Visualization Project"
 app.layout = html.Div(
         children = [
+            html.H1("Visualization Project",
+                style ={'textAlign':'center'} ),
             html.Div(
                 children = [
                     html.Div(
