@@ -21,7 +21,6 @@ from dash.dependencies import Output, Input
 from dash_table import DataTable
 import plotly.express as px
 import pandas as pd
-import numpy as np
 
 external_stylesheet = 'https://codepen.io/chriddyp/pen/bWLwgP.css'
 
