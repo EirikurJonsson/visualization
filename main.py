@@ -126,9 +126,13 @@ def descriptiveTable(input_data):
             'median_age',
             'human_development_index'
             ]
-    df = df[df["location"] == input_data]
-    df = df.drop_duplicates(subset = 'location')
-    df = df.loc[:,descriptiveAttributes].reset_index(drop=True)
+    indx = input_data
+    df = df.drop_duplicates(subset = 'location').reset_index(drop = True)
+    df = df.loc[:,descriptiveAttributes].sort_values(by = ['human_development_index']).reset_index(drop=True)
+    indx = df[df['location'] == indx].index.tolist()
+    ranger = [i+5 for i in indx]
+    slicer = range(indx[0], ranger[0])
+    df = df.loc[slicer,:]
     return(df.to_dict('records'))
 
 
