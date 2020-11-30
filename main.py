@@ -40,6 +40,7 @@ descriptiveAttributes = [
 
 df = data.drop_duplicates(subset = 'location')
 df = df.loc[:,descriptiveAttributes].reset_index(drop=True)
+colorIndex = 4
 
 app = dash.Dash(__name__, external_stylesheets = [external_stylesheet])
 application = app.server
@@ -80,7 +81,16 @@ app.layout = html.Div(
                            ],
                        style_cell = {
                            'font_size':'16px'
-                           }
+                           },
+                       style_data_conditional = [
+                           {
+                               'if':{
+                                   'filter_query':  '{{colorIndex}} == {}'.format(df.iloc[4,:].index.values),
+                                   },
+                               'backgroundColor': '#FF4136',
+                               'color':'white'
+                               }
+                           ]
                        ) 
                     ],
                 className = 'four columns'
@@ -107,7 +117,8 @@ def graphDiffperCountry(input_data):
                 'date':'Date',
                 'total_cases_diff': 'Total New Cases per Day'
                 },
-            title = input_data)
+            title = input_data
+            )
 
     return(fig)
 
@@ -117,7 +128,6 @@ def graphDiffperCountry(input_data):
         )
 def descriptiveTable(input_data):
     df = pd.read_csv("owid-covid-data.csv")
-
     descriptiveAttributes = [
             'location',
             'population',
@@ -131,9 +141,12 @@ def descriptiveTable(input_data):
     df = df.loc[:,descriptiveAttributes].sort_values(by = ['human_development_index']).reset_index(drop=True)
     indx = df[df['location'] == indx].index.tolist()
     ranger = [i+5 for i in indx]
-    slicer = range(indx[0], ranger[0])
-    df = df.loc[slicer,:]
+    minRanger = [i - 4 for i in indx]
+    slicer = range(minRanger[0], ranger[0])
+    df = df.loc[slicer,:].round(3)
+    df = df.reset_index(drop = True)
     return(df.to_dict('records'))
+
 
 
 if __name__ == '__main__':
