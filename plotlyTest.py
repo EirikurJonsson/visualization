@@ -8,5 +8,5 @@ iceland = data[data["location"] == "Iceland"]
 iceland = iceland.sort_values(by = ["date"])
 iceland["totalDiff"] = iceland["total_cases"].diff()
 
-fig = px.line(iceland["date"], iceland["totalDiff"])
-fig.show()
+plt.plot(iceland["date"], iceland["total_deaths"].diff())
+plt.show()
