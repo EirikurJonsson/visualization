@@ -13,6 +13,7 @@ There is a simple structure to this app:
        go into the div's we create.
 '''
 
+# All modules imported shall be placed here
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
@@ -22,14 +23,16 @@ from dash_table import DataTable
 import plotly.express as px
 import pandas as pd
 
+# Style sheet to use
 external_stylesheet = 'https://codepen.io/chriddyp/pen/bWLwgP.css'
 
+# Import data and data Transformation section
 data = pd.read_csv("owid-covid-data.csv")
-data["date"] = pd.to_datetime(data["date"])
-data = data.sort_values(by = "date")
+data["date"] = pd.to_datetime(data["date"]) #create datetime object
+data = data.sort_values(by = "date") # sort by data
 data["total_cases_diff"] = data["total_cases"].diff()
 
-descriptiveAttributes = [
+descriptiveAttributes=[
         'location',
         'population',
         'gdp_per_capita',
@@ -38,10 +41,28 @@ descriptiveAttributes = [
         'human_development_index'
         ]
 
+<<<<<<< HEAD
 df = data.drop_duplicates(subset = 'location')
 df = df.loc[:,descriptiveAttributes].reset_index(drop=True)
 colorIndex = 4
+=======
+'''
+This is the init. of the dash app. I (Eirikur) have never done this before but I propose a
+guideline of sorts. 
 
+After the start of every bracket please have a line between them like this
+>>>>>>> origin/master
+
+variable = [
+    some stuff(
+        some more stuff{
+
+        }
+    )
+]
+This has helped me in the past hold some resemblance of control of those
+millions of brackets we have to use - and I hope it helps you as well
+'''
 app = dash.Dash(__name__, external_stylesheets = [external_stylesheet])
 application = app.server
 app.title = "Visualization Project"
