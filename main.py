@@ -41,11 +41,10 @@ descriptiveAttributes=[
         'human_development_index'
         ]
 
-<<<<<<< HEAD
 df = data.drop_duplicates(subset = 'location')
 df = df.loc[:,descriptiveAttributes].reset_index(drop=True)
 colorIndex = 4
-=======
+
 '''
 This is the init. of the dash app. I (Eirikur) have never done this before but I propose a
 guideline of sorts. 
@@ -103,15 +102,6 @@ app.layout = html.Div(
                        style_cell = {
                            'font_size':'16px'
                            },
-                       style_data_conditional = [
-                           {
-                               'if':{
-                                   'filter_query':  '{{colorIndex}} == {}'.format(df.iloc[4,:].index.values),
-                                   },
-                               'backgroundColor': '#FF4136',
-                               'color':'white'
-                               }
-                           ]
                        ) 
                     ],
                 className = 'four columns'
