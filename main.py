@@ -21,6 +21,7 @@ import dash_bootstrap_components as dbc
 from dash.dependencies import Output, Input
 from dash_table import DataTable
 import plotly.express as px
+import plotly.graph_objects as go
 import pandas as pd
 
 # Style sheet to use
@@ -45,6 +46,18 @@ df = data.drop_duplicates(subset = 'location')
 df = df.loc[:,descriptiveAttributes].reset_index(drop=True)
 colorIndex = 4
 
+def indexFinder(input_data):
+    df = pd.read_csv("owid-covid-data.csv")
+    df = df.drop_duplicates(subset = 'location').reset_index(drop = True)
+    df = df.loc[:,descriptiveAttributes].sort_values(by = ['human_development_index']).reset_index(drop=True)
+    indx = df[df['location'] == input_data].index.tolist()
+    ranger = [i+2 for i in indx]
+    minRanger = [i - 1 for i in indx]
+    slicer = range(minRanger[0], ranger[0])
+    df = df.loc[slicer,:].round(3)
+    df = df.reset_index(drop = True)
+    return(df["location"].to_list())
+
 '''
 This is the init. of the dash app. I (Eirikur) have never done this before but I propose a
 guideline of sorts. 
@@ -62,7 +75,7 @@ variable = [
 This has helped me in the past hold some resemblance of control of those
 millions of brackets we have to use - and I hope it helps you as well
 '''
-app = dash.Dash(__name__, external_stylesheets = [external_stylesheet])
+app = dash.Dash(__name__) #, external_stylesheets = [external_stylesheet])
 application = app.server
 app.title = "Visualization Project"
 app.layout = html.Div(
@@ -78,7 +91,8 @@ app.layout = html.Div(
                                 {
                                     'label': i, 'value':i
                                     } for i in data["location"].unique()
-                                ]
+                                ],
+                            value = 'Iceland'
                             )
                         ),
                     html.Div(
@@ -100,8 +114,41 @@ app.layout = html.Div(
                                } for columnHeader in descriptiveAttributes
                            ],
                        style_cell = {
-                           'font_size':'16px'
+                           'font_size':'16px',
+                           'backgroundColor':'#F0DCD7',
+                           'color':'#FFFFF'
                            },
+                       style_as_list_view = True,
+                       style_header = {
+                           'fontWeight':'bold',
+                           'text_transform':'capitalize',
+                           'backgroundColor':'#76B5B0'
+                           },
+                       style_data_conditional = [
+                           {
+                           'if':{
+                               'row_index':4
+                               },
+                           'backgroundColor':'#DCF6A0',
+                           'color':'#FFFFF'
+                           },
+                           {
+                               'if':{
+                                   'row_index':5
+                                   },
+                           'backgroundColor':'#F9C4F8',
+                           'color':'#FFFFF'
+
+                               },
+                           {
+                               'if':{
+                                   'row_index':3
+                                   },
+                           'backgroundColor':'#F9C4F8',
+                           'color':'#FFFFF'
+
+                               }
+                           ]
                        ) 
                     ],
                 className = 'four columns'
@@ -117,19 +164,49 @@ app.layout = html.Div(
 
 def graphDiffperCountry(input_data):
     data = pd.read_csv("owid-covid-data.csv")
-    data = data[data["location"] == input_data]
+    data["date"] = pd.to_datetime(data["date"])
     data = data.sort_values(by = "date")
-    data["total_cases_diff"] = data["total_cases"].diff()
-    fig = px.line(
-            data,
-            x = 'date',
-            y = 'total_cases_diff',
-            labels = {
-                'date':'Date',
-                'total_cases_diff': 'Total New Cases per Day'
-                },
-            title = input_data
+    countries = indexFinder(input_data)
+    country1 = data[data["location"] == countries[0]].reset_index(drop = True)
+    country2 = data[data["location"] == countries[1]].reset_index(drop = True)
+    country3 = data[data["location"] == countries[2]].reset_index(drop = True)
+    country1["total_cases_diff"] = country1["total_cases"].diff()
+    country2["total_cases_diff"] = country2["total_cases"].diff()
+    country3["total_cases_diff"] = country3["total_cases"].diff()
+
+    country1y = country1["total_cases_diff"].to_list()
+    country2y = country2["total_cases_diff"].to_list()
+    country3y = country3["total_cases_diff"].to_list()
+    country1x = country1["date"].to_list()
+    country2x = country2["date"].to_list()
+    country3x = country3["date"].to_list()
+
+    fig = go.Figure()
+    fig.add_trace(
+            go.Scatter(
+                x = country1x,
+                y = country1y,
+                mode = 'lines',
+                name = countries[0]
+                )
             )
+    fig.add_trace(
+            go.Scatter(
+                x = country2x,
+                y = country2y,
+                mode = 'lines',
+                name = countries[1]
+                )
+            )
+    fig.add_trace(
+            go.Scatter(
+                x = country3x,
+                y = country3y,
+                mode = 'lines',
+                name = countries[2]
+                )
+            )
+    fig.update_layout(plot_bgcolor = '#F0DCD7', paper_bgcolor = '#F0DCD7')
 
     return(fig)
 
