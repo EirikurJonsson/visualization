@@ -9,6 +9,11 @@ descriptiveAttributes=[
         'human_development_index'
         ]
 
+df = pd.read_csv("owid-covid-data.csv")
+for i in df.columns:
+    print(i)
+print(df.info())
+'''
 def indexFinder(input_data):
     df = pd.read_csv("owid-covid-data.csv")
     df = df.drop_duplicates(subset = 'location').reset_index(drop = True)
@@ -22,3 +27,4 @@ def indexFinder(input_data):
     return(df["location"].to_list())
 
 print(indexFinder("China"))
+'''

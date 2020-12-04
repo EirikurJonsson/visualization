@@ -24,26 +24,50 @@ import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
 
-# Style sheet to use
-external_stylesheet = 'https://codepen.io/chriddyp/pen/bWLwgP.css'
+'''
+++++++++++++++++++++++ Style Section ++++++++++++++++++++++
+'''
+
+background = '#282a36'
+line = '#44475a'
+foreground = '#f8f8f2'
+comment = '#6272a4'
+cyan = '#8be9fd'
+green = '#50fa7b'
+orange = '#ffb86c'
+pink = '#ff79c6'
+purple = '#bd93f9'
+red = '#ff5555'
+yellow = '#f1fa8c'
 
 # Import data and data Transformation section
 data = pd.read_csv("owid-covid-data.csv")
 data["date"] = pd.to_datetime(data["date"]) #create datetime object
 data = data.sort_values(by = "date") # sort by data
-data["total_cases_diff"] = data["total_cases"].diff()
+data["total_cases_diff"] = data["total_cases_per_million"].diff()
 
 descriptiveAttributes=[
         'location',
         'population',
         'gdp_per_capita',
         'life_expectancy',
-        'median_age',
         'human_development_index'
         ]
 
+dataTableColumns = ['Country', 'Population', 'GDP', 'Life Expectancy', 'Human Develop. Index']
+
 df = data.drop_duplicates(subset = 'location')
 df = df.loc[:,descriptiveAttributes].reset_index(drop=True)
+df = df.rename(
+        columns = {
+            'location': 'Country',
+            'population':'Population',
+            'gdp_per_capita':'GDP',
+            'life_expectancy':'Life Expectancy',
+            'human_development_index':'Human Develop. Index'
+            }
+        )
+df = df.round(2)
 colorIndex = 4
 
 def indexFinder(input_data):
@@ -102,7 +126,7 @@ app.layout = html.Div(
                         )
 
                     ],
-                className = 'six columns'
+                className = 'five columns'
                 ),
             html.Div(
                 children = [
@@ -111,47 +135,66 @@ app.layout = html.Div(
                        columns = [
                            {
                                'name':columnHeader, 'id':columnHeader
-                               } for columnHeader in descriptiveAttributes
+                               } for columnHeader in dataTableColumns
                            ],
                        style_cell = {
-                           'font_size':'16px',
-                           'backgroundColor':'#F0DCD7',
-                           'color':'#FFFFF'
+                           'font_size':'20px',
+                           'backgroundColor':background,
+                           'color':comment,
+                           'textAlign':'left'
                            },
                        style_as_list_view = True,
                        style_header = {
                            'fontWeight':'bold',
                            'text_transform':'capitalize',
-                           'backgroundColor':'#76B5B0'
+                           'backgroundColor':line
                            },
                        style_data_conditional = [
                            {
                            'if':{
                                'row_index':4
                                },
-                           'backgroundColor':'#DCF6A0',
-                           'color':'#FFFFF'
+                           'backgroundColor':green,
+                           'color':comment
                            },
                            {
                                'if':{
                                    'row_index':5
                                    },
-                           'backgroundColor':'#F9C4F8',
-                           'color':'#FFFFF'
+                           'backgroundColor':yellow,
+                           'color':comment
 
                                },
                            {
                                'if':{
                                    'row_index':3
                                    },
-                           'backgroundColor':'#F9C4F8',
-                           'color':'#FFFFF'
+                           'backgroundColor':yellow,
+                           'color':comment
 
+                               },
+                           {
+                               'if':{
+                                   'column_id':'Life Expectancy'
+                                   },
+                               'textAlign':'right'
+                               },
+                           {
+                               'if':{
+                                   'column_id':'Human Develop. Index'
+                                   },
+                               'textAlign':'right'
+                               },
+                           {
+                               'if':{
+                                   'column_id':'GDP'
+                                   },
+                               'textAlign':'right'
                                }
                            ]
                        ) 
                     ],
-                className = 'four columns'
+                className = 'six columns'
                 )
 
             ]
@@ -170,9 +213,9 @@ def graphDiffperCountry(input_data):
     country1 = data[data["location"] == countries[0]].reset_index(drop = True)
     country2 = data[data["location"] == countries[1]].reset_index(drop = True)
     country3 = data[data["location"] == countries[2]].reset_index(drop = True)
-    country1["total_cases_diff"] = country1["total_cases"].diff()
-    country2["total_cases_diff"] = country2["total_cases"].diff()
-    country3["total_cases_diff"] = country3["total_cases"].diff()
+    country1["total_cases_diff"] = country1["total_cases_per_million"].diff()
+    country2["total_cases_diff"] = country2["total_cases_per_million"].diff()
+    country3["total_cases_diff"] = country3["total_cases_per_million"].diff()
 
     country1y = country1["total_cases_diff"].to_list()
     country2y = country2["total_cases_diff"].to_list()
@@ -206,7 +249,16 @@ def graphDiffperCountry(input_data):
                 name = countries[2]
                 )
             )
-    fig.update_layout(plot_bgcolor = '#F0DCD7', paper_bgcolor = '#F0DCD7')
+    fig.update_layout(
+            plot_bgcolor = background,
+            paper_bgcolor = background,
+            font_color = comment,
+            legend_title_font_color = comment,
+            xaxis = {
+                'showgrid':False
+                },
+            title = 'Daily Changes in New Cases per Million'
+            )
 
     return(fig)
 
@@ -221,7 +273,6 @@ def descriptiveTable(input_data):
             'population',
             'gdp_per_capita',
             'life_expectancy',
-            'median_age',
             'human_development_index'
             ]
     indx = input_data
@@ -233,6 +284,16 @@ def descriptiveTable(input_data):
     slicer = range(minRanger[0], ranger[0])
     df = df.loc[slicer,:].round(3)
     df = df.reset_index(drop = True)
+    df = df.rename(
+            columns = {
+                'location': 'Country',
+                'population':'Population',
+                'gdp_per_capita':'GDP',
+                'life_expectancy':'Life Expectancy',
+                'human_development_index':'Human Develop. Index'
+                }
+            )
+    df = df.round(2)
     return(df.to_dict('records'))
 
 
