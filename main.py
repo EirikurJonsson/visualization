@@ -40,6 +40,10 @@ purple = '#bd93f9'
 red = '#ff5555'
 yellow = '#f1fa8c'
 
+'''
+++++++++++++++++++++++ Initialization ++++++++++++++++++++++
+'''
+
 # Import data and data Transformation section
 data = pd.read_csv("owid-covid-data.csv")
 data["date"] = pd.to_datetime(data["date"]) #create datetime object
@@ -70,7 +74,20 @@ df = df.rename(
 df = df.round(2)
 colorIndex = 4
 
+'''
+This next function helps identify the comparison countries around the selected
+country. 
+'''
+
 def indexFinder(input_data):
+    '''
+    This function takes as input:
+    1. Country name 
+    2. Gives as output
+        - Country with lower HDI than selected country
+        - Selected Country
+        - Country with higher HDI than selected country
+    '''
     df = pd.read_csv("owid-covid-data.csv")
     df = df.drop_duplicates(subset = 'location').reset_index(drop = True)
     df = df.loc[:,descriptiveAttributes].sort_values(by = ['human_development_index']).reset_index(drop=True)
@@ -87,7 +104,6 @@ This is the init. of the dash app. I (Eirikur) have never done this before but I
 guideline of sorts. 
 
 After the start of every bracket please have a line between them like this
->>>>>>> origin/master
 
 variable = [
     some stuff(
@@ -99,7 +115,12 @@ variable = [
 This has helped me in the past hold some resemblance of control of those
 millions of brackets we have to use - and I hope it helps you as well
 '''
-app = dash.Dash(__name__) #, external_stylesheets = [external_stylesheet])
+
+'''
+++++++++++++++++++++++ Initialization of the App ++++++++++++++++++++++
+'''
+
+app = dash.Dash(__name__)
 application = app.server
 app.title = "Visualization Project"
 app.layout = html.Div(
