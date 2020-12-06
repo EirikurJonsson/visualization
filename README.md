@@ -12,7 +12,7 @@ TODO:
 - [x] Find a color scheme that works for this project
 - [ ] Bubble graph - interactive
 - [ ] World heat map - interactive
-- [ ] Combine long lat to main data file
+- [x] Combine long lat to main data file
 - [x] Create a more concrete TODO list for visualizations
 - [ ] Allow user to pick between death rate and infection rate daily change.
 
