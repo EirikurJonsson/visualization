@@ -58,7 +58,7 @@ descriptiveAttributes=[
         'human_development_index'
         ]
 
-dataTableColumns = ['Country', 'Population', 'GDP', 'Life Expectancy', 'Human Develop. Index']
+dataTableColumns = ['Country', 'Population', 'GDP', 'Life Expectancy', 'HDI']
 
 df = data.drop_duplicates(subset = 'location')
 df = df.loc[:,descriptiveAttributes].reset_index(drop=True)
@@ -68,7 +68,7 @@ df = df.rename(
             'population':'Population',
             'gdp_per_capita':'GDP',
             'life_expectancy':'Life Expectancy',
-            'human_development_index':'Human Develop. Index'
+            'human_development_index':'HDI'
             }
         )
 df = df.round(2)
@@ -125,6 +125,8 @@ application = app.server
 app.title = "Visualization Project"
 app.layout = html.Div(
         children = [
+html.Div(
+        children = [
             html.H1("Visualization Project",
                 style ={'textAlign':'center'} ),
             html.Div(
@@ -147,7 +149,7 @@ app.layout = html.Div(
                         )
 
                     ],
-                className = 'five columns'
+                className = 'six columns'
                 ),
             html.Div(
                 children = [
@@ -198,11 +200,11 @@ app.layout = html.Div(
                                'if':{
                                    'column_id':'Life Expectancy'
                                    },
-                               'textAlign':'right'
+                               'textAlign':'center'
                                },
                            {
                                'if':{
-                                   'column_id':'Human Develop. Index'
+                                   'column_id':'HDI'
                                    },
                                'textAlign':'right'
                                },
@@ -210,17 +212,34 @@ app.layout = html.Div(
                                'if':{
                                    'column_id':'GDP'
                                    },
-                               'textAlign':'right'
+                               'textAlign':'center'
                                }
                            ]
                        ) 
                     ],
-                className = 'six columns'
+                className = 'five columns'
                 )
 
-            ]
-        )
+            ],
+            className = 'row'
+        ),
+        html.Div(
+                children = [
+                    html.div(
+                        children = [
+                            dcc.Graph(
+                                id = 'deathGraph'
+                                ),
+                            DataTable(
+                                id = 'deathTable',
 
+                                )
+                            ]
+                        )
+                    ]
+                )
+    ]
+)
 @app.callback(
         Output('dailyChange', 'figure'),
         [Input('graph_filter', 'value')]
@@ -311,7 +330,7 @@ def descriptiveTable(input_data):
                 'population':'Population',
                 'gdp_per_capita':'GDP',
                 'life_expectancy':'Life Expectancy',
-                'human_development_index':'Human Develop. Index'
+                'human_development_index':'HDI'
                 }
             )
     df = df.round(2)
