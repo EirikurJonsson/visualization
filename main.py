@@ -225,14 +225,10 @@ html.Div(
         ),
         html.Div(
                 children = [
-                    html.div(
+                    html.Div(
                         children = [
                             dcc.Graph(
-                                id = 'deathGraph'
-                                ),
-                            DataTable(
-                                id = 'deathTable',
-
+                                id = 'worldGraph'
                                 )
                             ]
                         )
@@ -336,6 +332,33 @@ def descriptiveTable(input_data):
     df = df.round(2)
     return(df.to_dict('records'))
 
+
+@app.callback(
+        Output('worldGraph', 'figure'),
+        [Input('graph_filter', 'value')]
+        )
+
+def worldGraph(input_data):
+    data = pd.read_csv("owid-covid-data.csv")
+    data = data.fillna(0)
+    data = data[data["location"] != "World"]
+    data = data[data["location"] != "International"]
+
+
+    fig = px.scatter_mapbox(data,
+                            lat = "lat",
+                            lon = "long",
+                            hover_data = ["human_development_index"],
+                            hover_name = "location",
+                            zoom = 1,
+                            height = 600,
+                            size = "total_cases_per_million",
+                            color = "continent"
+                           )
+    fig.update_layout(mapbox_style = 'carto-darkmatter',
+            paper_bgcolor = background
+            )
+    return(fig)
 
 
 if __name__ == '__main__':
