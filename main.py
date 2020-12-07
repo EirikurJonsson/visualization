@@ -346,6 +346,8 @@ def descriptiveTable(input_data):
 
 def worldGraph(input_data):
     data = pd.read_csv("graphWorld.csv")
+    data= data[data['location'] != 'World']
+    data= data[data['location'] != 'International']
 
     fig = px.scatter_mapbox(data,
                             lat = "lat",
@@ -353,7 +355,7 @@ def worldGraph(input_data):
                             hover_name = "location",
                             zoom = 1,
                             height = 800,
-                            size = "total_cases_per_million",
+                            size = "total_cases",
                             color = "location"
                            )
     fig.update_layout(mapbox_style = 'carto-darkmatter',
