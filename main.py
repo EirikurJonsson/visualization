@@ -74,6 +74,22 @@ df = df.rename(
 df = df.round(2)
 colorIndex = 4
 
+world = pd.read_csv("graphWorld.csv")
+world = world[world['location'] != 'World']
+world = world[world['location'] != 'International']
+
+fig = px.scatter_mapbox(world,
+                        lat = "lat",
+                        lon = "long",
+                        hover_name = "location",
+                        zoom = 1,
+                        height = 800,
+                        size = "total_cases",
+                        color = "location"
+                       )
+fig.update_layout(mapbox_style = 'carto-darkmatter',
+        paper_bgcolor = background
+        )
 '''
 This next function helps identify the comparison countries around the selected
 country. 
@@ -234,7 +250,8 @@ html.Div(
                                     }
                                 ),
                             dcc.Graph(
-                                id = 'worldGraph'
+                                id = 'worldGraph',
+                                figure = fig
                                 )
                             ]
                         )
@@ -337,31 +354,6 @@ def descriptiveTable(input_data):
             )
     df = df.round(2)
     return(df.to_dict('records'))
-
-
-@app.callback(
-        Output('worldGraph', 'figure'),
-        [Input('graph_filter', 'value')]
-        )
-
-def worldGraph(input_data):
-    data = pd.read_csv("graphWorld.csv")
-    data= data[data['location'] != 'World']
-    data= data[data['location'] != 'International']
-
-    fig = px.scatter_mapbox(data,
-                            lat = "lat",
-                            lon = "long",
-                            hover_name = "location",
-                            zoom = 1,
-                            height = 800,
-                            size = "total_cases",
-                            color = "location"
-                           )
-    fig.update_layout(mapbox_style = 'carto-darkmatter',
-            paper_bgcolor = background
-            )
-    return(fig)
 
 
 if __name__ == '__main__':
