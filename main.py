@@ -227,6 +227,12 @@ html.Div(
                 children = [
                     html.Div(
                         children = [
+                            html.H2(
+                                "World Map: Total Case per million, Color by Continent",
+                                style = {
+                                    'textAlign':'center'
+                                    }
+                                ),
                             dcc.Graph(
                                 id = 'worldGraph'
                                 )
@@ -339,21 +345,16 @@ def descriptiveTable(input_data):
         )
 
 def worldGraph(input_data):
-    data = pd.read_csv("owid-covid-data.csv")
-    data = data.fillna(0)
-    data = data[data["location"] != "World"]
-    data = data[data["location"] != "International"]
-
+    data = pd.read_csv("graphWorld.csv")
 
     fig = px.scatter_mapbox(data,
                             lat = "lat",
                             lon = "long",
-                            hover_data = ["human_development_index"],
                             hover_name = "location",
                             zoom = 1,
-                            height = 600,
+                            height = 800,
                             size = "total_cases_per_million",
-                            color = "continent"
+                            color = "location"
                            )
     fig.update_layout(mapbox_style = 'carto-darkmatter',
             paper_bgcolor = background
