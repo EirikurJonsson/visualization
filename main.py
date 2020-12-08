@@ -11,6 +11,7 @@ There is a simple structure to this app:
        dbc.Col
     2. This is the callback section - here we give the data and create the viz that 
        go into the div's we create.
+
 '''
 
 # All modules imported shall be placed here
