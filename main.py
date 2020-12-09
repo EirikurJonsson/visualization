@@ -24,6 +24,7 @@ from dash_table import DataTable
 import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
+import locale
 
 '''
 ++++++++++++++++++++++ Style Section ++++++++++++++++++++++
@@ -83,14 +84,50 @@ fig = px.scatter_mapbox(world,
                         lat = "lat",
                         lon = "long",
                         hover_name = "location",
-                        zoom = 1,
+                        hover_data = {
+                            'total_cases':False,
+                            'Total Cases':True,
+                            'location':True,
+                            'Continent':True,
+                            'lat':False,
+                            'long':False
+                            },
+                        zoom = 1.5,
+                        animation_frame = "date",
+                        animation_group = "location",
                         height = 800,
                         size = "total_cases",
-                        color = "location"
+                        color = "Continent",
+                        size_max = 60
                        )
 fig.update_layout(mapbox_style = 'carto-darkmatter',
         paper_bgcolor = background
         )
+fig.update_layout(
+    hoverlabel=dict(
+        bgcolor="white",
+        font_size=16,
+        font_family="Rockwell"
+    )
+ )
+fig.layout.updatemenus[0].buttons[0].args[1]["frame"]["duration"] = 500
+
+'''
+fig1 = px.scatter(
+                 data, 
+                 y="new_cases",
+                 x="new_deaths",
+                 animation_frame="date",
+                 animation_group="location",
+                 size="new_cases",
+                 color="location",
+                 hover_name="location",
+                 log_x=True, 
+                 size_max=60
+                )
+fig1.layout.updatemenus[0].buttons[0].args[1]["frame"]["duration"] = 2000
+'''
+
 '''
 This next function helps identify the comparison countries around the selected
 country. 
@@ -146,6 +183,24 @@ html.Div(
         children = [
             html.H1("Visualization Project",
                 style ={'textAlign':'center'} ),
+        html.Div(
+                children = [
+                    html.Div(
+                        children = [
+                            html.H2(
+                                "World Map: Total Infection rate per million, Color by Continent",
+                                style = {
+                                    'textAlign':'center'
+                                    }
+                                ),
+                            dcc.Graph(
+                                id = 'worldGraph',
+                                figure = fig
+                                )
+                            ]
+                        )
+                    ]
+                ),
             html.Div(
                 children = [
                     html.Div(
@@ -239,25 +294,7 @@ html.Div(
 
             ],
             className = 'row'
-        ),
-        html.Div(
-                children = [
-                    html.Div(
-                        children = [
-                            html.H2(
-                                "World Map: Total Infection rate per million, Color by Continent",
-                                style = {
-                                    'textAlign':'center'
-                                    }
-                                ),
-                            dcc.Graph(
-                                id = 'worldGraph',
-                                figure = fig
-                                )
-                            ]
-                        )
-                    ]
-                )
+        )
     ]
 )
 @app.callback(
