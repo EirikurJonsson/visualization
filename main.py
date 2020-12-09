@@ -156,7 +156,7 @@ html.Div(
                                     'label': i, 'value':i
                                     } for i in data["location"].unique()
                                 ],
-                            value = 'Iceland'
+                            value = 'Denmark'
                             )
                         ),
                     html.Div(
@@ -245,7 +245,7 @@ html.Div(
                     html.Div(
                         children = [
                             html.H2(
-                                "World Map: Total Case per million, Color by Continent",
+                                "World Map: Total Infection rate per million, Color by Continent",
                                 style = {
                                     'textAlign':'center'
                                     }
