@@ -24,7 +24,6 @@ from dash_table import DataTable
 import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
-import locale
 
 '''
 ++++++++++++++++++++++ Style Section ++++++++++++++++++++++
@@ -76,11 +75,12 @@ df = df.rename(
 df = df.round(2)
 colorIndex = 4
 
-world = pd.read_csv("graphWorld.csv")
-world = world[world['location'] != 'World']
-world = world[world['location'] != 'International']
+mapdata = pd.read_csv("graphWorld.csv")
+mapdata = mapdata[mapdata['location'] != 'World']
+mapdata = mapdata[mapdata['location'] != 'International']
 
-fig = px.scatter_mapbox(world,
+
+fig = px.scatter_mapbox(mapdata,
                         lat = "lat",
                         lon = "long",
                         hover_name = "location",
@@ -88,45 +88,34 @@ fig = px.scatter_mapbox(world,
                             'total_cases':False,
                             'Total Cases':True,
                             'location':True,
-                            'Continent':True,
                             'lat':False,
-                            'long':False
+                            'long':False,
+                            'deathsize':True
                             },
-                        zoom = 1.5,
-                        animation_frame = "date",
-                        animation_group = "location",
+                        zoom = 1,
+                        size_max=75,
                         height = 800,
-                        size = "total_cases",
-                        color = "Continent",
-                        size_max = 60
+                        opacity = 0.4,
+                        size = 'deathsize',
+                        color = "HDI_INDEX",
+                        color_discrete_sequence=px.colors.cyclical.HSV,
+                        animation_frame="date",
+                        animation_group="location"
                        )
+
+
 fig.update_layout(mapbox_style = 'carto-darkmatter',
         paper_bgcolor = background
         )
 fig.update_layout(
     hoverlabel=dict(
-        bgcolor="white",
+        bgcolor="grey",
         font_size=16,
         font_family="Rockwell"
     )
  )
 fig.layout.updatemenus[0].buttons[0].args[1]["frame"]["duration"] = 500
 
-'''
-fig1 = px.scatter(
-                 data, 
-                 y="new_cases",
-                 x="new_deaths",
-                 animation_frame="date",
-                 animation_group="location",
-                 size="new_cases",
-                 color="location",
-                 hover_name="location",
-                 log_x=True, 
-                 size_max=60
-                )
-fig1.layout.updatemenus[0].buttons[0].args[1]["frame"]["duration"] = 2000
-'''
 
 '''
 This next function helps identify the comparison countries around the selected
@@ -183,24 +172,6 @@ html.Div(
         children = [
             html.H1("Visualization Project",
                 style ={'textAlign':'center'} ),
-        html.Div(
-                children = [
-                    html.Div(
-                        children = [
-                            html.H2(
-                                "World Map: Total Infection rate per million, Color by Continent",
-                                style = {
-                                    'textAlign':'center'
-                                    }
-                                ),
-                            dcc.Graph(
-                                id = 'worldGraph',
-                                figure = fig
-                                )
-                            ]
-                        )
-                    ]
-                ),
             html.Div(
                 children = [
                     html.Div(
@@ -294,7 +265,25 @@ html.Div(
 
             ],
             className = 'row'
-        )
+        ),
+        html.Div(
+                children = [
+                    html.Div(
+                        children = [
+                            html.H2(
+                                "World Map: Total death rate. Color by Humen Development Index",
+                                style = {
+                                    'textAlign':'center'
+                                    }
+                                ),
+                            dcc.Graph(
+                                id = 'worldGraph',
+                                figure = fig
+                                )
+                            ]
+                        )
+                    ]
+                )
     ]
 )
 @app.callback(
