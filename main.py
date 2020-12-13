@@ -142,22 +142,6 @@ def indexFinder(input_data):
     df = df.reset_index(drop = True)
     return(df["location"].to_list())
 
-'''
-This is the init. of the dash app. I (Eirikur) have never done this before but I propose a
-guideline of sorts. 
-
-After the start of every bracket please have a line between them like this
-
-variable = [
-    some stuff(
-        some more stuff{
-
-        }
-    )
-]
-This has helped me in the past hold some resemblance of control of those
-millions of brackets we have to use - and I hope it helps you as well
-'''
 
 '''
 ++++++++++++++++++++++ Initialization of the App ++++++++++++++++++++++
@@ -292,8 +276,7 @@ html.Div(
         )
 
 def graphDiffperCountry(input_data):
-    data = pd.read_csv("owid-covid-data.csv")
-    data["date"] = pd.to_datetime(data["date"])
+    global data
     data = data.sort_values(by = "date")
     countries = indexFinder(input_data)
     country1 = data[data["location"] == countries[0]].reset_index(drop = True)
@@ -353,7 +336,7 @@ def graphDiffperCountry(input_data):
         [Input('graph_filter', 'value')]
         )
 def descriptiveTable(input_data):
-    df = pd.read_csv("owid-covid-data.csv")
+    df = data
     descriptiveAttributes = [
             'location',
             'population',
@@ -385,3 +368,5 @@ def descriptiveTable(input_data):
 
 if __name__ == '__main__':
     app.run_server(debug=True)
+else:
+    print("Something is wrong")
