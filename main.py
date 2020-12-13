@@ -105,11 +105,13 @@ fig = px.scatter_mapbox(mapdata,
 
 
 fig.update_layout(mapbox_style = 'carto-darkmatter',
-        paper_bgcolor = background
+                  paper_bgcolor = background,
+                  font_color = cyan
         )
 fig.update_layout(
     hoverlabel=dict(
-        bgcolor="grey",
+        bgcolor=background,
+        font_color = cyan,
         font_size=16,
         font_family="Rockwell"
     )
@@ -152,10 +154,34 @@ application = app.server
 app.title = "Visualization Project"
 app.layout = html.Div(
         children = [
+            html.H1(
+                "Visualization Project",
+                style ={
+                    'textAlign':'center',
+                    'color':cyan
+                }
+            ),
+        html.Div(
+                children = [
+                    html.Div(
+                        children = [
+                            html.H2(
+                                "World Map: Total death rate. Color by Humen Development Index",
+                                style = {
+                                    'textAlign':'center',
+                                    'color':cyan
+                                    }
+                                ),
+                            dcc.Graph(
+                                id = 'worldGraph',
+                                figure = fig
+                                )
+                            ]
+                        )
+                    ]
+                ),
 html.Div(
         children = [
-            html.H1("Visualization Project",
-                style ={'textAlign':'center'} ),
             html.Div(
                 children = [
                     html.Div(
@@ -176,10 +202,17 @@ html.Div(
                         )
 
                     ],
-                className = 'six columns'
+                className = 'seven columns'
                 ),
             html.Div(
                 children = [
+                    html.H4(
+                        "Descriptive Table with Benchmark Countries",
+                        style = {
+                            'color':cyan,
+                            'textAlign':'center'
+                        }
+                    ),
                    DataTable(
                        id = 'descriptiveTable',
                        columns = [
@@ -244,30 +277,12 @@ html.Div(
                            ]
                        ) 
                     ],
-                className = 'five columns'
+                className = 'four columns'
                 )
 
             ],
             className = 'row'
-        ),
-        html.Div(
-                children = [
-                    html.Div(
-                        children = [
-                            html.H2(
-                                "World Map: Total death rate. Color by Humen Development Index",
-                                style = {
-                                    'textAlign':'center'
-                                    }
-                                ),
-                            dcc.Graph(
-                                id = 'worldGraph',
-                                figure = fig
-                                )
-                            ]
-                        )
-                    ]
-                )
+        )
     ]
 )
 @app.callback(
@@ -321,12 +336,13 @@ def graphDiffperCountry(input_data):
     fig.update_layout(
             plot_bgcolor = background,
             paper_bgcolor = background,
-            font_color = comment,
-            legend_title_font_color = comment,
+            font_color = cyan,
+            legend_title_font_color = cyan,
             xaxis = {
                 'showgrid':False
                 },
-            title = 'Daily Changes in New Cases per Million'
+            title = 'Daily Changes in New Cases per Million',
+            hovermode = 'x unified'
             )
 
     return(fig)
