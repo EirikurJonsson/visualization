@@ -1,5 +1,7 @@
 # Visualization Project
 
+There isnt much left - as of 13/12 we only need the bubble graph
+
 Feel free to add here.
 
 TODO:
@@ -11,10 +13,9 @@ TODO:
 - [x] Plot comparison countries 
 - [x] Find a color scheme that works for this project
 - [ ] Bubble graph - interactive
-- [ ] World heat map - interactive
+- [x] World heat map - interactive
 - [x] Combine long lat to main data file
 - [x] Create a more concrete TODO list for visualizations
-- [ ] Allow user to pick between death rate and infection rate daily change.
 
 ## Ready visualizations
 
