@@ -95,7 +95,7 @@ fig = px.scatter_mapbox(mapdata,
                         zoom = 1,
                         size_max=75,
                         height = 800,
-                        opacity = 0.4,
+                        opacity = 0.7,
                         size = 'deathsize',
                         color = "HDI_INDEX",
                         color_discrete_sequence=px.colors.cyclical.HSV,
@@ -104,7 +104,7 @@ fig = px.scatter_mapbox(mapdata,
                        )
 
 
-fig.update_layout(mapbox_style = 'carto-darkmatter',
+fig.update_layout(mapbox_style = 'carto-positron',
                   paper_bgcolor = background,
                   font_color = cyan
         )
