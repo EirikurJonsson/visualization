@@ -122,7 +122,8 @@ fig.update_layout(
         font_family="Rockwell"
     )
  )
-fig.layout.updatemenus[0].buttons[0].args[1]["frame"]["duration"] = 500
+fig.layout.updatemenus[0].buttons[0].args[1]["frame"]["duration"] = 100
+fig.layout.updatemenus[0].buttons[0].args[1]["transition"]["duration"] = 100
 
 ############## BUBBLE CHART ##################
 
@@ -132,8 +133,8 @@ bubbledata = bubbledata[bubbledata['location'] != 'International']
 
 bubblefig = px.scatter(
                  bubbledata, 
-                 y="total_cases_per_million",
-                 x="total_deaths_per_million",
+                 x="total_cases_per_million",
+                 y="total_deaths_per_million",
                  animation_frame="date",
                  animation_group="location",
                  size="gdp_per_capita",
@@ -142,14 +143,15 @@ bubblefig = px.scatter(
                  hover_name="location",
                  size_max=20
                 )
-bubblefig.layout.updatemenus[0].buttons[0].args[1]["frame"]["duration"] = 2000
+bubblefig.layout.updatemenus[0].buttons[0].args[1]["frame"]["duration"] = 100
+bubblefig.layout.updatemenus[0].buttons[0].args[1]["transition"]["duration"] = 100
 bubblefig.update_layout(
     paper_bgcolor = background,
     plot_bgcolor = background,
     font_color = cyan,
 )
-bubblefig.update_xaxes(range=[-10,1500])
-bubblefig.update_yaxes(range=[-10,80000])
+bubblefig.update_yaxes(range=[-10,1500])
+bubblefig.update_xaxes(range=[-10,80000])
 
 
 '''
