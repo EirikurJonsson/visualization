@@ -140,10 +140,16 @@ bubblefig = px.scatter(
                  color="HDI_INDEX",
                  color_discrete_sequence=px.colors.cyclical.HSV,
                  hover_name="location",
-                 log_x=True, 
                  size_max=20
                 )
 bubblefig.layout.updatemenus[0].buttons[0].args[1]["frame"]["duration"] = 2000
+bubblefig.update_layout(
+    paper_bgcolor = background,
+    plot_bgcolor = background,
+    font_color = cyan,
+)
+bubblefig.update_xaxes(range=[-10,1500])
+bubblefig.update_yaxes(range=[-10,80000])
 
 
 '''
