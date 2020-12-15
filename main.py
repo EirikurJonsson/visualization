@@ -25,6 +25,8 @@ import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
 
+
+
 '''
 ++++++++++++++++++++++ Style Section ++++++++++++++++++++++
 '''
@@ -75,6 +77,10 @@ df = df.rename(
 df = df.round(2)
 colorIndex = 4
 
+
+
+############# MAP ####################
+
 mapdata = pd.read_csv("graphWorld.csv")
 mapdata = mapdata[mapdata['location'] != 'World']
 mapdata = mapdata[mapdata['location'] != 'International']
@@ -117,6 +123,27 @@ fig.update_layout(
     )
  )
 fig.layout.updatemenus[0].buttons[0].args[1]["frame"]["duration"] = 500
+
+############## BUBBLE CHART ##################
+
+bubbledata = pd.read_csv("bubble.csv")
+bubbledata = bubbledata[bubbledata['location'] != 'World']
+bubbledata = bubbledata[bubbledata['location'] != 'International']
+
+bubblefig = px.scatter(
+                 bubbledata, 
+                 y="total_cases_per_million",
+                 x="total_deaths_per_million",
+                 animation_frame="date",
+                 animation_group="location",
+                 size="gdp_per_capita",
+                 color="HDI_INDEX",
+                 color_discrete_sequence=px.colors.cyclical.HSV,
+                 hover_name="location",
+                 log_x=True, 
+                 size_max=20
+                )
+bubblefig.layout.updatemenus[0].buttons[0].args[1]["frame"]["duration"] = 2000
 
 
 '''
@@ -282,7 +309,28 @@ html.Div(
 
             ],
             className = 'row'
-        )
+        ),
+        ## Insert bubblechart
+                html.Div(
+                children = [
+                    html.Div(
+                        children = [
+                            html.H2(
+                                "Bubble Chart",
+                                style = {
+                                    'textAlign':'center',
+                                    'color':cyan
+                                    }
+                                ),
+                            dcc.Graph(
+                                id = 'bubbleChart',
+                                figure = bubblefig
+                                )
+                            ]
+                        )
+                    ]
+                ),
+
     ]
 )
 @app.callback(
