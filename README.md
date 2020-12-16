@@ -1,8 +1,18 @@
 # Visualization Project
 
-There isnt much left - as of 13/12 we only need the bubble graph
+## To run our dashboard
 
-Feel free to add here.
+If you decide to test our dashboard, please follow these steps:
+
+1. Clone the repo to a location on you local computer
+2. _Recommended_: Create a virtual environment and install packages in the requirements.txt file using
+    - pip install -r requirements.txt
+3. The repo contains all data files used, so you only need to run the main.py file
+    - In a terminal, navigate to the location where you cloned the project and in that terminal run:__python main.py__.
+
+The last step can take some time since the visualizations are all interactive and are running on a rather large dataset. 
+
+Thank you for testing and we hope you enjoy!
 
 TODO:
 
@@ -12,7 +22,7 @@ TODO:
 - [x] Time series graph in daily change of new cases with dropdown
 - [x] Plot comparison countries 
 - [x] Find a color scheme that works for this project
-- [ ] Bubble graph - interactive
+- [x] Bubble graph - interactive
 - [x] World heat map - interactive
 - [x] Combine long lat to main data file
 - [x] Create a more concrete TODO list for visualizations
