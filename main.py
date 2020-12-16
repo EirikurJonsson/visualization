@@ -141,7 +141,8 @@ bubblefig = px.scatter(
                  color="HDI_INDEX",
                  color_discrete_sequence=px.colors.cyclical.HSV,
                  hover_name="location",
-                 size_max=20
+                 size_max=20,
+                 height = 800
                 )
 bubblefig.layout.updatemenus[0].buttons[0].args[1]["frame"]["duration"] = 100
 bubblefig.layout.updatemenus[0].buttons[0].args[1]["transition"]["duration"] = 100
